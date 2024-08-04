@@ -1,0 +1,24 @@
+---
+
+- name: Configure RTPProxy logrotate
+  template:
+    src: "logrotate.conf.j2"
+    dest: "/etc/logrotate.d/{{ rtpproxy_service_name}}"
+    mode: '0644'
+
+
+- name: Create RTPProxy SystemD service
+  template:
+    src: rtpproxy.service.j2
+    dest: /etc/systemd/system/{{ rtpproxy_service_name }}.service
+    owner: "root"
+    group: "root"
+    mode: 0644
+  notify: 
+    - reload systemd
+    - restart rtpproxy
+
+- name: Enable RTPProxy service
+  service:
+    name: {{ rtpproxy_service_name }}
+    enabled: true

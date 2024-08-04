@@ -1,0 +1,123 @@
+---
+
+rtpproxy_version: latest
+
+rtpproxy_service_name: rtpproxy
+
+rtpproxy_user: rtpproxy
+rtpproxy_group: "{{ rtpproxy_user }}"
+
+rtpproxy_latest_release_url: "https://api.github.com/repos/sippy/rtpproxy/releases/latest"
+rtpproxy_download_base_url: "https://github.com/sippy/rtpproxy/archive"
+
+rtpproxy_install_dir: /opt/rtpproxy
+rtpproxy_download_dir: /tmp
+
+rtpproxy_force_install: false
+rtpproxy_cleanup_downloads: true
+
+# This parameter configures rtpproxy control socket.
+# The control socket is used by the call controller for the purpose of creating, modifying, 
+# and deleting RTP sessions. The control socket can also be used to fetch stats from
+#  the rtpproxy process, or about specific media sessions. 
+# Examples:
+#    udp:127.0.0.1:9000
+#    udp:*:9001
+#    tcp:*:9002
+#    unix:/var/run/rtpproxy.dock
+#    cunix:/var/run/rtpproxy.dock
+# This is an equivalent of command line argument "-s ctrl_socket".
+# rtpproxy_ctrl_socket: "unix:/var/run/rtpproxy/rtpproxy.sock"
+rtpproxy_ctrl_socket: "udp:0.0.0.0:22222"
+
+# IPv4 listen IP address(es). You can specify either one or two addresses. 
+# If two addresses are specified, the rtpproxy will work in bridging mode.
+# This is an equivalent of command line argument "-l addr1[/addr2]".
+rtpproxy_addr: 0.0.0.0
+
+# IPv6 listen IP address(es). You can specify either one or two addresses. 
+# If two addresses are specified, the rtpproxy will work in bridging mode.
+# This is an equivalent of command line argument "-6 addr1[/addr2]".
+# rtpproxy_ipv6_addr: 
+
+# Set advertised address of rtpproxy. Useful if the rtpproxy is behind a NAT firewall  (like Amazon EC2).
+# When the rtpproxy receives a session request from a SIP controller it will return the IP address(es) 
+# specified in this option.
+# This is an equivalent of command line argument "-A advaddr1[/advaddr2]".
+rtpproxy_advaddr: 
+
+# This is an equivalent of command line argument "-t tos".
+rtpproxy_tos: "0xB8"
+
+# Directory to write recorded RTP sessions.
+# This is an equivalent of command line argument "-r rec_dir".
+rtpproxy_recording_dir: 
+
+# Spool directory for recording of RTP streams. When the session is stopped, 
+# the recording will be moved from the spool directory to the rec_dir directory 
+# as specified by the `rtpproxy_recording_dir` option.
+# This is an equivalent of command line argument "-S spool_dir".
+rtpproxy_spool_dir: 
+
+# Prevent recording RTCP packets.
+# This is an equivalent of command line argument "-R"
+rtpproxy_prevent_recording_rtcp: true 
+
+# This parameter configures the name of the file where PID of running rtpproxy will be stored. 
+# Default is /var/run/rtpproxy.pid.
+# This is an equivalent of command line argument "-p pid_file"
+rtpproxy_pid_file: /var/run/rtpproxy/rtproxy.pid
+
+# Specify the RTP inactivity timer. Defaults to 60 seconds.
+# If the rtpproxy does not receive any RTP packets for more than max_ttl it will then delete the session.
+# This is an equivalent of command line argument "-T max_ttl"
+rtpproxy_max_ttl: 60
+
+
+# Set the maximum number of open file descriptors per process. 
+# The default maximum is set by the operating system.
+# The rtpproxy requires four file descriptors per session to ensure that it can reliably identify 
+# where each stream is coming from in a NAT firewall scenario.
+# This is an equivalent of command line argument "-L nofile_limit"
+rtpproxy_nofile_limit: 16384
+
+# Set lower limit on UDP ports range that the rtpproxy uses for RTP/RTCP sessions to min_port. 
+# Default is 35000.
+# This is an equivalent of command line argument "-m min_port"
+rtpproxy_min_port: 35000
+
+# Set upper limit on UDP ports range that the rtpproxy uses for RTP/RTCP sessions to max_port. 
+# Default is 65000.
+# This is an equivalent of command line argument "-M max_port"
+rtpproxy_max_port: 65000
+
+
+# Switch rtpproxy to UID identified by the uname
+# and optional GID identified by gname when proxy is up and running.
+# This is an equivalent of command line argument "-u uname[:gname]"
+rtpproxy_uname: "{{ rtpproxy_user }}:{{ rtpproxy_group }}"
+
+# Set access mode for the controlling UNIX-socket (if used). 
+# Only applies if rtpproxy runs under a different GID using -u option.
+# This is an equivalent of command line argument "-w sock_mode"
+rtpproxy_sock_mode:
+
+# Configures the verbosity level of the log output. Possible log_level values in the order 
+# from the most verbose to the least verbose are: DBUG, INFO, WARN, ERR and CRIT.
+rtpproxy_log_level: "INFO:LOG_LOCAL5"
+
+
+# Treat all RTP/RTCP sessions as "assymetric", i.e. disable any NAT traversal features unconditionally.
+rtpproxy_force_assymetric: false
+
+
+# Additional arguments passed to rtpproxy in command line
+# Use it for the parameters that were not defined in this variables file.
+rtpproxy_extra_args:
+
+# The following command line arguments were not implemented:
+#  -F
+#  -i
+#  -n timeout_socket
+#  -P
+#  -a 

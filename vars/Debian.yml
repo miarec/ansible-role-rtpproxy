@@ -1,0 +1,7 @@
+---
+# OS Specific variables
+
+## Source install variables
+rtpproxy_source_dependencies:
+  - gcc
+  - make

@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+
+{{ rtpproxy_log_dir }}/{{ rtpproxy_lof_file }} {
+    missingok
+    notifempty
+    compress
+    delaycompress
+    copytruncate
+    daily
+    dateext
+    rotate {{ rtpproxy_logrotate_days }}
+}

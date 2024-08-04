@@ -1,0 +1,5 @@
+---
+
+rtpproxy_source_dependencies:
+  - gcc
+  - make

@@ -1,0 +1,97 @@
+---
+- name: Install source dependencies for RTPProxy
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ rtpproxy_source_dependencies }}"
+
+- name: Create RTPProxy Install directory
+  file:
+    path: "{{ rtpproxy_install_dir }}"
+    state: directory
+    owner: "{{ rtpproxy_user }}"
+    group: "{{ rtpproxy_group }}"
+    mode: 0755
+
+- name: Identifying the latest software release
+  uri:
+    url: "{{ rtpproxy_latest_release_url }}"
+    return_content: yes
+  register: latest_release
+  when: rtpproxy_version == "latest"
+
+- set_fact:
+    rtpproxy_download_version={{ latest_release.json.tag_name | trim('v') }}
+  when: rtpproxy_version == "latest"
+
+- set_fact:
+    rtpproxy_download_version={{ rtpproxy_version }}
+  when: rtpproxy_version != "latest"
+
+
+- name: Download RTPProxy tarball | Source install
+  get_url:
+    url: "{{ rtpproxy_download_base_url }}/v{{ rtpproxy_download_version }}.tar.gz"
+    dest: "{{ rtpproxy_download_dir }}/rtpproxy-{{ rtpproxy_download_version }}.tar.gz"
+    mode: 0600
+
+# unarchive must change the permissions of the destination folder when mode parameter is supplied.
+# But it behaves differently with tar.gz and zip archives.
+# When extracting tar.gz, it doesn't touch the destination folder's permissions.
+# While in case of extracting zip into something like /tmp/ with mode: 755, it overrides the permissions of /tmp to 755.
+# This step will create a direcoty specific to this role to extract files to
+- name: Create directory for extracted files
+  file:
+    path: "{{ rtpproxy_download_dir }}/rtpproxy-{{ rtpproxy_download_version }}"
+    state: directory
+    mode: u=rwX,g=rX,o=rX
+  register: _extract_dir
+
+- name: Extract RTPProxy tarball
+  unarchive:
+    src: "{{ rtpproxy_download_dir }}/rtpproxy-{{ rtpproxy_download_version }}.tar.gz"
+    dest: "{{ _extract_dir.path }}"
+    creates: "{{ _extract_dir.path }}/rtpproxy-{{ rtpproxy_download_version }}/configure"
+    copy: false
+
+- name: Run RTPProxy configure
+  shell: umask 0022 && ./configure --bindir={{ rtpproxy_install_dir }}
+  args:
+    chdir: "{{ _extract_dir.path }}/rtpproxy-{{ rtpproxy_download_version }}"
+    creates: "{{ _extract_dir.path }}/rtpproxy-{{ rtpproxy_download_version }}/Makefile"
+
+- name: Compile RTPProxy
+  shell: umask 0022 && make -j{{ ansible_processor_cores | default(1) + 1 }}
+  args:
+    chdir: "{{ _extract_dir.path }}/rtpproxy-{{ rtpproxy_download_version }}"
+    creates: "{{ _extract_dir.path }}/src/rtpproxy"
+
+- name: Install RTPProxy
+  shell: umask 0022 && make install
+  args:
+    chdir: "{{ _extract_dir.path }}/rtpproxy-{{ rtpproxy_download_version }}"
+    creates: "{{ rtpproxy_install_dir }}/bin/rtpproxy"
+  notify: restart rtpproxy
+
+- name: Register RTPProxy binaries
+  command: ls -1 {{ rtpproxy_install_dir }}/bin
+  register: _rtpproxy_binaries
+  changed_when: false
+
+- name: Add RTPProxy binaries to alternatives
+  alternatives:
+    name: "{{ item }}"
+    path: "{{ rtpproxy_install_dir }}/bin/{{ item }}"
+    link: "/usr/bin/{{ item }}"
+  with_items: "{{ _rtpproxy_binaries.stdout_lines }}"
+
+# Cleanup Source Files
+- name: Clean up the source files
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ _extract_dir.path }}"
+    - "{{ rtpproxy_download_dir }}/rtpproxy-{{ rtpproxy_download_version }}.tar.gz"
+  when: rtpproxy_cleanup_downloads|bool
+  become: true

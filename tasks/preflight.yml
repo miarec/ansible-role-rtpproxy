@@ -1,0 +1,25 @@
+---
+- name: Include OS specific vars.
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "../vars/{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+    - "../vars/{{ ansible_distribution }}.yml"
+    - "../vars/{{ ansible_os_family }}.yml"
+
+- name: Add RTPProxy group
+  group:
+    name: "{{ rtpproxy_group }}"
+    state: present
+    system: true
+  when: rtpproxy_group != "root"
+
+- name: Add RTPProxy user
+  user:
+    name: "{{ rtpproxy_user }}"
+    group: "{{ rtpproxy_group }}"
+    comment: "RTPProxy"
+    home: "{{ rtpproxy_install_dir }}"
+    shell: /bin/false
+    system: true
+  when: rtpproxy_user != "root"
+

@@ -1,0 +1,34 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=RTPProxy
+After=network.target
+Documentation=https://www.rtpproxy.org
+
+[Service]
+Type=simple
+User={{ rtpproxy_user }}
+Group={{ rtpproxy_group }}
+UMask=007
+
+# Below line will create /var/run/rtpproxy directory and set rtpproxy user as an owner
+RuntimeDirectory=rtpproxy
+
+LimitNOFILE={{ rtpproxy_nofile_limit }}
+LimitFSIZE=infinity
+
+ExecStart={{ rtpproxy_install_dir }}/bin/rtpproxy \
+    -p {{ rtpproxy_pid_file }} \
+    -u {{ rtpproxy_uname }} \
+    -s {{ rtpproxy_ctrl_socket }} \
+    -l {{ rtpproxy_addr }} \
+    -A {{ rtpproxy_addvaddr }} \
+    -m {{ rtpproxy_min_port }} -M {{ rtpproxy_max_port }} \
+    -T {{ rtpproxy_max_ttl }}
+    -d {{ rtpproxy_log_level }}
+
+Restart=always
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
