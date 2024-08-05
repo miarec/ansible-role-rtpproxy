@@ -16,6 +16,11 @@ rtpproxy_download_dir: /tmp
 rtpproxy_force_install: false
 rtpproxy_cleanup_downloads: true
 
+
+rtpproxy_log_dir: /var/log/rtpproxy
+rtpproxy_log_file: rtpproxy.log
+rtpproxy_logrotate_days: 30
+
 # This parameter configures rtpproxy control socket.
 # The control socket is used by the call controller for the purpose of creating, modifying, 
 # and deleting RTP sessions. The control socket can also be used to fetch stats from
@@ -28,7 +33,7 @@ rtpproxy_cleanup_downloads: true
 #    cunix:/var/run/rtpproxy.dock
 # This is an equivalent of command line argument "-s ctrl_socket".
 # rtpproxy_ctrl_socket: "unix:/var/run/rtpproxy/rtpproxy.sock"
-rtpproxy_ctrl_socket: "udp:0.0.0.0:22222"
+rtpproxy_ctrl_socket: "udp:*:22222"
 
 # IPv4 listen IP address(es). You can specify either one or two addresses. 
 # If two addresses are specified, the rtpproxy will work in bridging mode.

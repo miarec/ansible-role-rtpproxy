@@ -22,7 +22,7 @@ ExecStart={{ rtpproxy_install_dir }}/bin/rtpproxy \
     -u {{ rtpproxy_uname }} \
     -s {{ rtpproxy_ctrl_socket }} \
     -l {{ rtpproxy_addr }} \
-    -A {{ rtpproxy_addvaddr }} \
+    {{ "-A " + rtpproxy_advaddr if rtpproxy_advaddr else "" }} \
     -m {{ rtpproxy_min_port }} -M {{ rtpproxy_max_port }} \
     -T {{ rtpproxy_max_ttl }}
     -d {{ rtpproxy_log_level }}

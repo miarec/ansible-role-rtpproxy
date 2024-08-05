@@ -10,7 +10,7 @@
 - name: Create RTPProxy SystemD service
   template:
     src: rtpproxy.service.j2
-    dest: /etc/systemd/system/{{ rtpproxy_service_name }}.service
+    dest: "/etc/systemd/system/{{ rtpproxy_service_name }}.service"
     owner: "root"
     group: "root"
     mode: 0644
@@ -20,5 +20,5 @@
 
 - name: Enable RTPProxy service
   service:
-    name: {{ rtpproxy_service_name }}
+    name: "{{ rtpproxy_service_name }}"
     enabled: true
