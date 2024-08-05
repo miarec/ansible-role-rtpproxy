@@ -11,7 +11,7 @@
     state: directory
     owner: "{{ rtpproxy_user }}"
     group: "{{ rtpproxy_group }}"
-    mode: 0755
+    mode: "0755"
 
 - name: Identifying the latest software release
   uri:
@@ -20,12 +20,12 @@
   register: latest_release
   when: rtpproxy_version == "latest"
 
-- set_fact:
-    rtpproxy_download_version={{ latest_release.json.tag_name | trim('v') }}
+- set_fact:    # noqa name[missing]
+    rtpproxy_download_version: "{{ latest_release.json.tag_name | trim('v') }}"
   when: rtpproxy_version == "latest"
 
-- set_fact:
-    rtpproxy_download_version={{ rtpproxy_version }}
+- set_fact:    # noqa name[missing]
+    rtpproxy_download_version: "{{ rtpproxy_version }}"
   when: rtpproxy_version != "latest"
 
 - name: Clone RTPProxy GitHub repository

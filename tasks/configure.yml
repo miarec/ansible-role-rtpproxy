@@ -6,7 +6,7 @@
     state: directory
     owner: "{{ rtpproxy_user }}"
     group: "{{ rtpproxy_group }}"
-    mode: 0755
+    mode: "0755"
 
 - name: Create RTPProxy Log file with proper permissions
   file:
@@ -16,7 +16,7 @@
     modification_time: preserve
     owner: "{{ rtpproxy_user }}"
     group: "{{ rtpproxy_group }}"
-    mode: 0755
+    mode: "0755"
 
 - name: Configure Rsyslog for RTPProxy
   template:
@@ -24,7 +24,7 @@
     dest: "/etc/rsyslog.d/{{ rtpproxy_service_name }}.conf"
     owner: "root"
     group: "root"
-    mode: 0644
+    mode: "0644"
   notify: 
     - restart rsyslog
 
@@ -32,7 +32,7 @@
   template:
     src: "logrotate.conf.j2"
     dest: "/etc/logrotate.d/{{ rtpproxy_service_name}}"
-    mode: '0644'
+    mode: "0644"
 
 
 - name: Create RTPProxy SystemD service
@@ -41,7 +41,7 @@
     dest: "/etc/systemd/system/{{ rtpproxy_service_name }}.service"
     owner: "root"
     group: "root"
-    mode: 0644
+    mode: "0644"
   notify: 
     - reload systemd
     - restart rtpproxy

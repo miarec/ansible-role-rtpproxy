@@ -1,16 +1,16 @@
 ---
-- name: reload systemd
+- name: reload systemd       # noqa name[casing]
   systemd:
     daemon_reload: true
   become: true
 
-- name: restart rsyslog
+- name: restart rsyslog       # noqa name[casing]
   service:
     name: rsyslog
     state: restarted
   become: true
 
-- name: restart rtpproxy
+- name: restart rtpproxy       # noqa name[casing]
   service:
     name: "{{ rtpproxy_service_name }}"
     state: restarted
