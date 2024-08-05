@@ -16,6 +16,12 @@
             cache_valid_time: 600
           changed_when: false
 
+        - package:
+            name: "{{ item }}"
+            state: present
+          with_items: 
+            - rsyslog
+
   roles:
     - role: ansible-role-rtpproxy
       tags:

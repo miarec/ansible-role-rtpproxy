@@ -56,14 +56,14 @@
   notify: restart rtpproxy
 
 - name: Register RTPProxy binaries
-  command: ls -1 {{ rtpproxy_install_dir }}
+  command: ls -1 {{ rtpproxy_install_dir }}/bin
   register: _rtpproxy_binaries
   changed_when: false
 
 - name: Add RTPProxy binaries to alternatives
   alternatives:
     name: "{{ item }}"
-    path: "{{ rtpproxy_install_dir }}/{{ item }}"
+    path: "{{ rtpproxy_install_dir }}/bin/{{ item }}"
     link: "/usr/bin/{{ item }}"
   with_items: "{{ _rtpproxy_binaries.stdout_lines }}"
 

@@ -1,5 +1,33 @@
 ---
 
+- name: Create RTPProxy Log directory
+  file:
+    path: "{{ rtpproxy_log_dir }}"
+    state: directory
+    owner: "{{ rtpproxy_user }}"
+    group: "{{ rtpproxy_group }}"
+    mode: 0755
+
+- name: Create RTPProxy Log file with proper permissions
+  file:
+    path: "{{ rtpproxy_log_dir }}/{{ rtpproxy_log_file }}"
+    state: touch
+    access_time: preserve
+    modification_time: preserve
+    owner: "{{ rtpproxy_user }}"
+    group: "{{ rtpproxy_group }}"
+    mode: 0755
+
+- name: Configure Rsyslog for RTPProxy
+  template:
+    src: rsyslog.conf.j2
+    dest: "/etc/rsyslog.d/{{ rtpproxy_service_name }}.conf"
+    owner: "root"
+    group: "root"
+    mode: 0644
+  notify: 
+    - restart rsyslog
+
 - name: Configure RTPProxy logrotate
   template:
     src: "logrotate.conf.j2"

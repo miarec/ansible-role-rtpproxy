@@ -20,7 +20,7 @@ For a full list of variables, see [defaults/main.yml](./defaults/main.yml)
 
 ## Network Settings
 
- - `rtpproxy_ctrl_socket`: The control socket for RTPPRoxy. Default is `unix:/var/run/rtpproxy.sock`
+ - `rtpproxy_ctrl_socket`: The control socket for RTPPRoxy. 
 
 ## Logging
 

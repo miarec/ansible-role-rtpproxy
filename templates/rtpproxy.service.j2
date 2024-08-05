@@ -7,15 +7,15 @@ Documentation=https://www.rtpproxy.org
 
 [Service]
 Type=simple
-User={{ rtpproxy_user }}
-Group={{ rtpproxy_group }}
-UMask=007
+PIDFile={{ rtpproxy_pid_file }} 
 
-# Below line will create /var/run/rtpproxy directory and set rtpproxy user as an owner
-RuntimeDirectory=rtpproxy
+Restart=always
+RestartSec=5s
 
 LimitNOFILE={{ rtpproxy_nofile_limit }}
-LimitFSIZE=infinity
+
+ExecStartPre=-/bin/mkdir /run/rtpproxy
+ExecStartPre=-/bin/chown {{ rtpproxy_user }}:{{ rtpproxy_group }} /run/rtpproxy
 
 ExecStart={{ rtpproxy_install_dir }}/bin/rtpproxy \
     -p {{ rtpproxy_pid_file }} \
@@ -24,11 +24,14 @@ ExecStart={{ rtpproxy_install_dir }}/bin/rtpproxy \
     -l {{ rtpproxy_addr }} \
     {{ "-A " + rtpproxy_advaddr if rtpproxy_advaddr else "" }} \
     -m {{ rtpproxy_min_port }} -M {{ rtpproxy_max_port }} \
-    -T {{ rtpproxy_max_ttl }}
+    -T {{ rtpproxy_max_ttl }} \
     -d {{ rtpproxy_log_level }}
 
-Restart=always
-RestartSec=5s
+ExecStop=/usr/bin/pkill -F {{ rtpproxy_pid_file }}
+ExecStopPost=-/bin/rm -R /run/rtpproxy
+
+TimeoutStartSec=10
+TimeoutStopSec=10
 
 [Install]
 WantedBy=multi-user.target

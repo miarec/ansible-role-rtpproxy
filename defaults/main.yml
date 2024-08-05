@@ -17,9 +17,16 @@ rtpproxy_force_install: false
 rtpproxy_cleanup_downloads: true
 
 
+
 rtpproxy_log_dir: /var/log/rtpproxy
 rtpproxy_log_file: rtpproxy.log
 rtpproxy_logrotate_days: 30
+rtpproxy_syslog_facility: local5
+
+# Configures the verbosity level of the log output. Possible log_level values in the order 
+# from the most verbose to the least verbose are: DBUG, INFO, WARN, ERR and CRIT.
+rtpproxy_log_level: "INFO:LOG_{{ rtpproxy_syslog_facility|upper }}"
+
 
 # This parameter configures rtpproxy control socket.
 # The control socket is used by the call controller for the purpose of creating, modifying, 
@@ -71,7 +78,7 @@ rtpproxy_prevent_recording_rtcp: true
 # This parameter configures the name of the file where PID of running rtpproxy will be stored. 
 # Default is /var/run/rtpproxy.pid.
 # This is an equivalent of command line argument "-p pid_file"
-rtpproxy_pid_file: /var/run/rtpproxy/rtproxy.pid
+rtpproxy_pid_file: /run/rtpproxy/rtpproxy.pid
 
 # Specify the RTP inactivity timer. Defaults to 60 seconds.
 # If the rtpproxy does not receive any RTP packets for more than max_ttl it will then delete the session.
@@ -106,10 +113,6 @@ rtpproxy_uname: "{{ rtpproxy_user }}:{{ rtpproxy_group }}"
 # Only applies if rtpproxy runs under a different GID using -u option.
 # This is an equivalent of command line argument "-w sock_mode"
 rtpproxy_sock_mode:
-
-# Configures the verbosity level of the log output. Possible log_level values in the order 
-# from the most verbose to the least verbose are: DBUG, INFO, WARN, ERR and CRIT.
-rtpproxy_log_level: "INFO:LOG_LOCAL5"
 
 
 # Treat all RTP/RTCP sessions as "assymetric", i.e. disable any NAT traversal features unconditionally.

@@ -4,6 +4,12 @@
     daemon_reload: true
   become: true
 
+- name: restart rsyslog
+  service:
+    name: rsyslog
+    state: restarted
+  become: true
+
 - name: restart rtpproxy
   service:
     name: "{{ rtpproxy_service_name }}"

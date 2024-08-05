@@ -3,7 +3,7 @@
   include_tasks: preflight.yml
 
 - name: Check if RTPProxy is installed
-  command: "which {{ rtpproxy_install_dir }}/rtpproxy"
+  command: "which {{ rtpproxy_install_dir }}/bin/rtpproxy"
   register: rtpproxy_exists
   failed_when: false
   ignore_errors: true
