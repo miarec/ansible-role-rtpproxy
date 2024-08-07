@@ -4,8 +4,8 @@
   file:
     path: "{{ rtpproxy_log_dir }}"
     state: directory
-    owner: "{{ rtpproxy_user }}"
-    group: "{{ rtpproxy_group }}"
+    owner: "{{ syslog_user }}"
+    group: "{{ syslog_group }}"
     mode: "0755"
 
 - name: Create RTPProxy Log file with proper permissions
@@ -14,8 +14,8 @@
     state: touch
     access_time: preserve
     modification_time: preserve
-    owner: "{{ rtpproxy_user }}"
-    group: "{{ rtpproxy_group }}"
+    owner: "{{ syslog_user }}"
+    group: "{{ syslog_group }}"
     mode: "0755"
 
 - name: Configure Rsyslog for RTPProxy
