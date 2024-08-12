@@ -3,6 +3,7 @@
   package:
     name: "{{ item }}"
     state: present
+    update_cache: true
   with_items: "{{ rtpproxy_source_dependencies }}"
 
 - name: Create RTPProxy Install directory
